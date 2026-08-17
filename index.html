@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="utf-8">
@@ -11,48 +11,36 @@
   box-sizing:border-box;
 }
 
-html,body{
-  margin:0;
-  padding:0;
-  min-height:100%;
-}
-
 body{
+  margin:0;
   min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   padding:20px;
-  background:linear-gradient(135deg,#fff4df,#ffe3e8);
+  background:linear-gradient(135deg,#fff4df,#ffe8e8);
   font-family:Arial,sans-serif;
-  color:#333;
 }
 
 .card{
   width:min(92vw,520px);
-  min-height:100vh;
   background:#fff;
-  border-radius:24px;
-  padding:24px 18px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+  border-radius:26px;
+  padding:28px 20px 25px;
+  text-align:center;
   box-shadow:0 15px 45px #0002;
 }
 
 h1{
-  margin:0 0 6px;
+  margin:0 0 8px;
   color:#ed3345;
   font-size:30px;
-  text-align:center;
 }
 
 .sub{
-  margin:0 0 14px;
+  margin:0 0 20px;
   color:#777;
   font-size:16px;
-  text-align:center;
 }
 
 .wheel{
@@ -86,9 +74,9 @@ canvas{
 button{
   border:0;
   background:#ed3345;
-  color:#fff;
+  color:white;
   border-radius:15px;
-  padding:15px 30px;
+  padding:14px 30px;
   font-size:20px;
   font-weight:700;
   cursor:pointer;
@@ -102,76 +90,46 @@ button:disabled{
 
 #result{
   display:none;
-  width:100%;
   margin:18px auto 0;
   padding:15px;
   border-radius:14px;
   background:#fff4c7;
-  color:#e52e42;
-  text-align:center;
-}
-
-#result .congrats{
-  font-size:18px;
-  color:#333;
 }
 
 #result b{
   display:block;
-  margin-top:5px;
   color:#e52e42;
   font-size:25px;
-}
-
-#result .hint{
-  display:block;
-  margin-top:8px;
-  font-size:14px;
-  color:#333;
+  margin-top:5px;
 }
 
 .note{
   font-size:13px;
   color:#888;
   margin-top:14px;
-  text-align:center;
 }
 
 @media(max-width:500px){
-
   body{
-    padding:0;
+    padding:10px;
   }
 
   .card{
     width:100%;
-    min-height:100vh;
-    border-radius:0;
-    padding:20px 12px;
+    padding:24px 12px;
   }
 
   h1{
-    font-size:30px;
+    font-size:27px;
   }
 
   .sub{
-    font-size:16px;
-  }
-
-  .wheel{
-    width:92vw;
-    max-width:430px;
-    margin-top:8px;
+    font-size:15px;
   }
 
   button{
-    font-size:20px;
-    padding:15px 30px;
-  }
-
-  #result{
-    width:92vw;
-    max-width:430px;
+    font-size:18px;
+    padding:13px 27px;
   }
 }
 </style>
@@ -204,10 +162,6 @@ button:disabled{
 
 <script>
 
-/* =========================
-   PHẦN THƯỞNG
-========================= */
-
 const prizes = [
   "Vớ + băng quấn",
   "Túi chống nước",
@@ -215,130 +169,111 @@ const prizes = [
   "Giày shop chọn"
 ];
 
-
-/* =========================
-   THIẾT LẬP
-========================= */
+const colors = [
+  "#ed2f2f",
+  "#82e927",
+  "#2fd1d4",
+  "#8e32e5"
+];
 
 const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
-
 const btn = document.getElementById("spin");
 const result = document.getElementById("result");
 
-const KEY = "vigasport_spin_used_v2";
+const SIZE = 700;
+const CENTER = SIZE / 2;
+const RADIUS = 340;
 
 let rotation = 0;
 let busy = false;
 
+function drawWheel(){
 
-/* =========================
-   VẼ VÒNG QUAY
-========================= */
-
-function draw(){
+  ctx.clearRect(0,0,SIZE,SIZE);
 
   const n = prizes.length;
-  const s = Math.PI * 2 / n;
-
-  ctx.clearRect(0,0,700,700);
+  const slice = Math.PI * 2 / n;
 
   for(let i=0;i<n;i++){
 
-    const a = rotation + i*s - Math.PI/2;
+    const start = rotation + i * slice;
+    const end = start + slice;
+    const middle = start + slice / 2;
 
-    /* Vẽ ô */
+    /* Ô phần thưởng */
     ctx.beginPath();
-
-    ctx.moveTo(350,350);
-
+    ctx.moveTo(CENTER,CENTER);
     ctx.arc(
-      350,
-      350,
-      340,
-      a,
-      a+s
+      CENTER,
+      CENTER,
+      RADIUS,
+      start,
+      end
     );
-
     ctx.closePath();
 
-    const colors = [
-      "#ed2f2f",
-      "#7ee52a",
-      "#2fd3d6",
-      "#8f3fe3"
-    ];
-
     ctx.fillStyle = colors[i];
-
     ctx.fill();
 
-    ctx.strokeStyle = "#fff";
+    /* Viền */
+    ctx.strokeStyle = "#ffffff";
     ctx.lineWidth = 5;
-
     ctx.stroke();
 
-
-    /* =========================
-       VẼ CHỮ
-    ========================= */
+    /*
+      ===== CHỮ =====
+      Đưa chữ vào chính giữa từng ô
+      và tự xuống dòng nếu dài.
+    */
 
     ctx.save();
 
-    const mid = a + s/2;
-
-    ctx.translate(350,350);
-    ctx.rotate(mid);
+    ctx.translate(CENTER,CENTER);
+    ctx.rotate(middle);
 
     /*
-      Đảo chữ ở phía bên trái
-      để luôn đọc được bình thường.
+      Nếu chữ nằm bên trái vòng,
+      xoay lại để chữ không bị ngược.
     */
-
-    if(Math.cos(mid) < 0){
+    if(
+      Math.cos(middle) < 0
+    ){
       ctx.rotate(Math.PI);
     }
 
-    ctx.fillStyle = "#fff";
-
-    ctx.font = "bold 22px Arial";
-
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 23px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    /*
-      Chia chữ dài thành 2 dòng
-      để không bị dính nhau.
-    */
+    const text = prizes[i];
 
+    /*
+      Tách chữ thành từng dòng.
+    */
     let lines = [];
 
-    if(prizes[i] === "Vớ + băng quấn"){
+    if(text === "Vớ + băng quấn"){
       lines = ["Vớ +", "băng quấn"];
     }
-    else if(prizes[i] === "Túi chống nước"){
+    else if(text === "Túi chống nước"){
       lines = ["Túi chống", "nước"];
     }
-    else if(prizes[i] === "Giày tự chọn"){
+    else if(text === "Giày tự chọn"){
       lines = ["Giày tự", "chọn"];
     }
-    else if(prizes[i] === "Giày shop chọn"){
+    else if(text === "Giày shop chọn"){
       lines = ["Giày shop", "chọn"];
     }
-    else{
-      lines = [prizes[i]];
-    }
 
-    /*
-      Vị trí chữ nằm giữa ô,
-      cách tâm vừa đủ.
-    */
+    const textRadius = 215;
 
     if(lines.length === 1){
 
       ctx.fillText(
         lines[0],
-        215,
+        textRadius,
         0
       );
 
@@ -346,211 +281,155 @@ function draw(){
 
       ctx.fillText(
         lines[0],
-        215,
-        -14
+        textRadius,
+        -15
       );
 
       ctx.fillText(
         lines[1],
-        215,
-        14
+        textRadius,
+        15
       );
-
     }
 
     ctx.restore();
   }
 
-
-  /* =========================
-     VÒNG TRÒN Ở GIỮA
-  ========================= */
-
+  /* Nút QUAY ở giữa */
   ctx.beginPath();
-
   ctx.arc(
-    350,
-    350,
+    CENTER,
+    CENTER,
     55,
     0,
-    Math.PI*2
+    Math.PI * 2
   );
 
   ctx.fillStyle = "#ed3345";
-
   ctx.fill();
 
-
-  ctx.fillStyle = "#fff";
-
+  ctx.fillStyle = "#ffffff";
   ctx.font = "bold 20px Arial";
-
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
   ctx.fillText(
     "QUAY",
-    350,
-    350
+    CENTER,
+    CENTER
   );
 }
 
-
-/* =========================
-   HIỆN KẾT QUẢ
-========================= */
 
 function showPrize(prize){
 
   result.style.display = "block";
 
-  result.innerHTML = `
-    <span class="congrats">🎉 Chúc mừng!</span>
-    <b>${prize}</b>
-    <span class="hint">
-      Hãy chụp màn hình kết quả để nhận quà.
-    </span>
-  `;
+  result.innerHTML =
+    "🎉 Chúc mừng!<b>" +
+    prize +
+    "</b><div style='font-size:14px;margin-top:14px'>" +
+    "Hãy chụp màn hình kết quả để nhận quà." +
+    "</div>";
 }
 
 
-/* =========================
-   QUAY VÒNG QUAY
-========================= */
-
 function spin(){
 
-  if(
-    busy ||
-    localStorage.getItem(KEY) === "1"
-  ){
-    return;
-  }
+  if(busy) return;
 
   busy = true;
-
   btn.disabled = true;
-
-  result.style.display = "none";
-
+  btn.textContent = "🔒 ĐANG QUAY...";
 
   const n = prizes.length;
-
-  const s = Math.PI*2/n;
-
+  const slice = Math.PI * 2 / n;
 
   /*
-    Chọn ngẫu nhiên phần thưởng.
+    Chọn phần thưởng ngẫu nhiên.
   */
-
-  const index = Math.floor(
-    Math.random()*n
-  );
-
+  const index = Math.floor(Math.random() * n);
 
   /*
-    Tính chính xác góc để phần thưởng
-    được chọn dừng ngay dưới mũi tên.
+    Tính góc để phần thưởng được chọn
+    dừng đúng dưới mũi tên.
   */
-
   const target =
-    rotation +
-    Math.PI*2*7 -
-    index*s -
-    s/2;
+    Math.PI * 2 * 5 +
+    (Math.PI * 2 - (index + 0.5) * slice);
 
-
-  const start = rotation;
+  const startRotation = rotation;
+  const finalRotation = rotation + target;
 
   const duration = 4500;
+  const startTime = performance.now();
 
-  const begin = performance.now();
+  function animate(now){
 
-
-  function frame(now){
-
-    const t = Math.min(
-      1,
-      (now-begin)/duration
-    );
-
+    const progress =
+      Math.min(
+        1,
+        (now - startTime) / duration
+      );
 
     /*
       Hiệu ứng giảm tốc.
     */
-
     const ease =
-      1-Math.pow(1-t,4);
-
+      1 - Math.pow(1 - progress, 4);
 
     rotation =
-      start +
-      (target-start)*ease;
+      startRotation +
+      (finalRotation - startRotation) * ease;
 
+    drawWheel();
 
-    draw();
+    if(progress < 1){
 
-
-    if(t<1){
-
-      requestAnimationFrame(frame);
+      requestAnimationFrame(animate);
 
     }else{
 
-      rotation = target;
+      rotation %= Math.PI * 2;
 
-      draw();
-
-      busy = false;
-
-      /*
-        Lưu trạng thái đã quay.
-      */
-
-      localStorage.setItem(
-        KEY,
-        "1"
-      );
-
-      btn.disabled = true;
+      showPrize(prizes[index]);
 
       btn.textContent = "🔒 ĐÃ QUAY";
 
-      showPrize(
-        prizes[index]
+      localStorage.setItem(
+        "vigasport_spin_used_v3",
+        "1"
       );
+
+      busy = false;
     }
   }
 
-
-  requestAnimationFrame(frame);
+  requestAnimationFrame(animate);
 }
 
 
-/* =========================
-   KIỂM TRA TRẠNG THÁI
-========================= */
-
+/* Kiểm tra đã quay chưa */
 if(
-  localStorage.getItem(KEY) === "1"
+  localStorage.getItem(
+    "vigasport_spin_used_v3"
+  ) === "1"
 ){
 
   btn.disabled = true;
-
   btn.textContent = "🔒 ĐÃ QUAY";
 }
 
 
-/* =========================
-   KHỞI ĐỘNG
-========================= */
-
+/* Nút quay */
 btn.addEventListener(
   "click",
   spin
 );
 
-draw();
+
+/* Vẽ vòng quay lần đầu */
+drawWheel();
 
 </script>
 

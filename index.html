@@ -1,135 +1,153 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>VigaSport - Vòng quay may mắn</title>
 
 <style>
-*{
-  box-sizing:border-box;
+* {
+  box-sizing: border-box;
 }
 
-body{
-  margin:0;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-  background:linear-gradient(135deg,#fff4df,#ffe8e8);
-  font-family:Arial,sans-serif;
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #fff4df, #ffe8e8);
+  font-family: Arial, sans-serif;
 }
 
-.card{
-  width:min(92vw,520px);
-  background:#fff;
-  border-radius:26px;
-  padding:28px 20px 25px;
-  text-align:center;
-  box-shadow:0 15px 45px #0002;
+.container {
+  width: min(92vw, 700px);
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px 22px 24px;
+  box-shadow: 0 15px 45px rgba(0,0,0,.12);
+  text-align: center;
 }
 
-h1{
-  margin:0 0 8px;
-  color:#ed3345;
-  font-size:30px;
+h1 {
+  margin: 0;
+  color: #ed3345;
+  font-size: clamp(28px, 6vw, 48px);
+  font-weight: 800;
 }
 
-.sub{
-  margin:0 0 20px;
-  color:#777;
-  font-size:16px;
+.subtitle {
+  margin: 8px 0 18px;
+  color: #777;
+  font-size: clamp(16px, 3.5vw, 22px);
 }
 
-.wheel{
-  width:min(88vw,430px);
-  aspect-ratio:1;
-  margin:10px auto 22px;
-  position:relative;
+.wheel-wrap {
+  position: relative;
+  width: min(88vw, 620px);
+  aspect-ratio: 1;
+  margin: 0 auto 22px;
 }
 
-canvas{
-  width:100%;
-  height:100%;
-  display:block;
-  border-radius:50%;
-  filter:drop-shadow(0 7px 12px #0002);
+#wheel {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-.pointer{
-  position:absolute;
-  z-index:5;
-  left:50%;
-  top:-2px;
-  transform:translateX(-50%);
-  width:0;
-  height:0;
-  border-left:19px solid transparent;
-  border-right:19px solid transparent;
-  border-top:42px solid #ed3345;
+.pointer {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 24px solid transparent;
+  border-right: 24px solid transparent;
+  border-top: 55px solid #ed3345;
+  z-index: 5;
+  filter: drop-shadow(0 3px 3px rgba(0,0,0,.2));
 }
 
-button{
-  border:0;
-  background:#ed3345;
-  color:white;
-  border-radius:15px;
-  padding:14px 30px;
-  font-size:20px;
-  font-weight:700;
-  cursor:pointer;
-  box-shadow:0 5px 12px #ed334555;
+button {
+  width: min(90%, 340px);
+  padding: 16px 20px;
+  border: none;
+  border-radius: 16px;
+  background: #ed3345;
+  color: white;
+  font-size: 20px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(237,51,69,.25);
 }
 
-button:disabled{
-  opacity:.6;
-  cursor:not-allowed;
+button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
 }
 
-#result{
-  display:none;
-  margin:18px auto 0;
-  padding:15px;
-  border-radius:14px;
-  background:#fff4c7;
+#result {
+  display: none;
+  margin-top: 24px;
+  padding: 24px 16px;
+  border-radius: 20px;
+  background: #fff5c9;
+  color: #222;
 }
 
-#result b{
-  display:block;
-  color:#e52e42;
-  font-size:25px;
-  margin-top:5px;
+#result .congrats {
+  font-size: 20px;
+  margin-bottom: 10px;
 }
 
-.note{
-  font-size:13px;
-  color:#888;
-  margin-top:14px;
+#result .prize {
+  color: #ed3345;
+  font-size: clamp(28px, 7vw, 40px);
+  font-weight: 800;
+  margin-bottom: 10px;
 }
 
-@media(max-width:500px){
-  body{
-    padding:10px;
+.note {
+  margin-top: 22px;
+  color: #888;
+  font-size: 15px;
+}
+
+@media (max-width: 500px) {
+  body {
+    padding: 10px;
+    align-items: flex-start;
   }
 
-  .card{
-    width:100%;
-    padding:24px 12px;
+  .container {
+    width: 100%;
+    margin-top: 8px;
+    padding: 24px 12px 20px;
+    border-radius: 22px;
   }
 
-  h1{
-    font-size:27px;
+  .wheel-wrap {
+    width: min(88vw, 500px);
+    margin-top: 8px;
+    margin-bottom: 18px;
   }
 
-  .sub{
-    font-size:15px;
+  .pointer {
+    border-left-width: 19px;
+    border-right-width: 19px;
+    border-top-width: 44px;
   }
 
-  button{
-    font-size:18px;
-    padding:13px 27px;
+  button {
+    font-size: 18px;
+    padding: 15px;
+  }
+
+  #result {
+    padding: 20px 10px;
   }
 }
 </style>
@@ -137,22 +155,26 @@ button:disabled{
 
 <body>
 
-<div class="card">
+<div class="container">
 
   <h1>🎁 VÒNG QUAY MAY MẮN</h1>
 
-  <p class="sub">
+  <div class="subtitle">
     Quay thử vận may – nhận quà ngay!
-  </p>
+  </div>
 
-  <div class="wheel">
+  <div class="wheel-wrap">
     <div class="pointer"></div>
     <canvas id="wheel" width="700" height="700"></canvas>
   </div>
 
-  <button id="spin">🎯 QUAY NGAY</button>
+  <button id="spinBtn">🎯 QUAY NGAY</button>
 
-  <div id="result"></div>
+  <div id="result">
+    <div class="congrats">🎉 Chúc mừng!</div>
+    <div class="prize" id="prizeText"></div>
+    <div>Hãy chụp màn hình kết quả để nhận quà.</div>
+  </div>
 
   <div class="note">
     Mỗi thiết bị/trình duyệt chỉ được quay 1 lần.
@@ -161,7 +183,6 @@ button:disabled{
 </div>
 
 <script>
-
 const prizes = [
   "Vớ + băng quấn",
   "Túi chống nước",
@@ -170,40 +191,41 @@ const prizes = [
 ];
 
 const colors = [
-  "#ed2f2f",
-  "#82e927",
-  "#2fd1d4",
-  "#8e32e5"
+  "#ef2d2d",
+  "#35d1d3",
+  "#9b4de5",
+  "#99e94a"
 ];
 
 const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
-const btn = document.getElementById("spin");
+const spinBtn = document.getElementById("spinBtn");
 const result = document.getElementById("result");
+const prizeText = document.getElementById("prizeText");
 
 const SIZE = 700;
 const CENTER = SIZE / 2;
 const RADIUS = 340;
 
 let rotation = 0;
-let busy = false;
+let spinning = false;
 
-function drawWheel(){
+const STORAGE_KEY = "vigasport_spin_used_v2";
 
-  ctx.clearRect(0,0,SIZE,SIZE);
+function drawWheel() {
+  ctx.clearRect(0, 0, SIZE, SIZE);
 
-  const n = prizes.length;
-  const slice = Math.PI * 2 / n;
+  const slice = Math.PI * 2 / prizes.length;
 
-  for(let i=0;i<n;i++){
+  for (let i = 0; i < prizes.length; i++) {
 
     const start = rotation + i * slice;
     const end = start + slice;
     const middle = start + slice / 2;
 
-    /* Ô phần thưởng */
+    // Vẽ ô
     ctx.beginPath();
-    ctx.moveTo(CENTER,CENTER);
+    ctx.moveTo(CENTER, CENTER);
     ctx.arc(
       CENTER,
       CENTER,
@@ -216,192 +238,125 @@ function drawWheel(){
     ctx.fillStyle = colors[i];
     ctx.fill();
 
-    /* Viền */
+    ctx.lineWidth = 6;
     ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 5;
     ctx.stroke();
 
-    /*
-      ===== CHỮ =====
-      Đưa chữ vào chính giữa từng ô
-      và tự xuống dòng nếu dài.
-    */
-
+    // ===== CHỮ =====
     ctx.save();
 
-    ctx.translate(CENTER,CENTER);
+    ctx.translate(CENTER, CENTER);
     ctx.rotate(middle);
 
     /*
-      Nếu chữ nằm bên trái vòng,
-      xoay lại để chữ không bị ngược.
+      Nếu chữ nằm ở nửa bên trái,
+      xoay 180 độ để chữ luôn đọc đúng.
     */
-    if(
-      Math.cos(middle) < 0
-    ){
+    if (Math.cos(middle) < 0) {
       ctx.rotate(Math.PI);
     }
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 23px Arial";
+    ctx.font = "bold 25px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    const text = prizes[i];
-
-    /*
-      Tách chữ thành từng dòng.
-    */
-    let lines = [];
-
-    if(text === "Vớ + băng quấn"){
-      lines = ["Vớ +", "băng quấn"];
-    }
-    else if(text === "Túi chống nước"){
-      lines = ["Túi chống", "nước"];
-    }
-    else if(text === "Giày tự chọn"){
-      lines = ["Giày tự", "chọn"];
-    }
-    else if(text === "Giày shop chọn"){
-      lines = ["Giày shop", "chọn"];
-    }
-
-    const textRadius = 215;
-
-    if(lines.length === 1){
-
-      ctx.fillText(
-        lines[0],
-        textRadius,
-        0
-      );
-
-    }else{
-
-      ctx.fillText(
-        lines[0],
-        textRadius,
-        -15
-      );
-
-      ctx.fillText(
-        lines[1],
-        textRadius,
-        15
-      );
-    }
+    ctx.fillText(
+      prizes[i],
+      RADIUS * 0.62,
+      0
+    );
 
     ctx.restore();
   }
 
-  /* Nút QUAY ở giữa */
+  // Vòng tròn giữa
   ctx.beginPath();
-  ctx.arc(
-    CENTER,
-    CENTER,
-    55,
-    0,
-    Math.PI * 2
-  );
-
+  ctx.arc(CENTER, CENTER, 55, 0, Math.PI * 2);
   ctx.fillStyle = "#ed3345";
   ctx.fill();
+
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = "#ffffff";
+  ctx.stroke();
 
   ctx.fillStyle = "#ffffff";
   ctx.font = "bold 20px Arial";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
+  ctx.fillText("QUAY", CENTER, CENTER);
+}
 
-  ctx.fillText(
-    "QUAY",
-    CENTER,
-    CENTER
-  );
+drawWheel();
+
+
+function alreadySpun() {
+  return localStorage.getItem(STORAGE_KEY) === "1";
 }
 
 
-function showPrize(prize){
-
-  result.style.display = "block";
-
-  result.innerHTML =
-    "🎉 Chúc mừng!<b>" +
-    prize +
-    "</b><div style='font-size:14px;margin-top:14px'>" +
-    "Hãy chụp màn hình kết quả để nhận quà." +
-    "</div>";
+if (alreadySpun()) {
+  spinBtn.disabled = true;
+  spinBtn.textContent = "🔒 ĐÃ QUAY";
 }
 
 
-function spin(){
+function spin() {
 
-  if(busy) return;
+  if (spinning || alreadySpun()) {
+    return;
+  }
 
-  busy = true;
-  btn.disabled = true;
-  btn.textContent = "🔒 ĐANG QUAY...";
+  spinning = true;
+  spinBtn.disabled = true;
+  spinBtn.textContent = "🎯 ĐANG QUAY...";
 
-  const n = prizes.length;
-  const slice = Math.PI * 2 / n;
+  const winner = Math.floor(Math.random() * prizes.length);
 
-  /*
-    Chọn phần thưởng ngẫu nhiên.
-  */
-  const index = Math.floor(Math.random() * n);
+  const slice = 360 / prizes.length;
 
   /*
-    Tính góc để phần thưởng được chọn
-    dừng đúng dưới mũi tên.
+    Đưa ô trúng thưởng vào vị trí mũi tên phía trên.
   */
-  const target =
-    Math.PI * 2 * 5 +
-    (Math.PI * 2 - (index + 0.5) * slice);
+  const targetAngle =
+    360 * 6 +
+    (360 - (winner * slice + slice / 2));
 
   const startRotation = rotation;
-  const finalRotation = rotation + target;
+  const targetRotation =
+    startRotation + targetAngle * Math.PI / 180;
 
   const duration = 4500;
   const startTime = performance.now();
 
-  function animate(now){
+  function animate(now) {
 
     const progress =
-      Math.min(
-        1,
-        (now - startTime) / duration
-      );
+      Math.min((now - startTime) / duration, 1);
 
-    /*
-      Hiệu ứng giảm tốc.
-    */
+    // easing
     const ease =
       1 - Math.pow(1 - progress, 4);
 
     rotation =
       startRotation +
-      (finalRotation - startRotation) * ease;
+      (targetRotation - startRotation) * ease;
 
     drawWheel();
 
-    if(progress < 1){
-
+    if (progress < 1) {
       requestAnimationFrame(animate);
+    } else {
 
-    }else{
+      spinning = false;
 
-      rotation %= Math.PI * 2;
+      localStorage.setItem(STORAGE_KEY, "1");
 
-      showPrize(prizes[index]);
+      spinBtn.textContent = "🔒 ĐÃ QUAY";
 
-      btn.textContent = "🔒 ĐÃ QUAY";
+      prizeText.textContent = prizes[winner];
 
-      localStorage.setItem(
-        "vigasport_spin_used_v3",
-        "1"
-      );
-
-      busy = false;
+      result.style.display = "block";
     }
   }
 
@@ -409,28 +364,7 @@ function spin(){
 }
 
 
-/* Kiểm tra đã quay chưa */
-if(
-  localStorage.getItem(
-    "vigasport_spin_used_v3"
-  ) === "1"
-){
-
-  btn.disabled = true;
-  btn.textContent = "🔒 ĐÃ QUAY";
-}
-
-
-/* Nút quay */
-btn.addEventListener(
-  "click",
-  spin
-);
-
-
-/* Vẽ vòng quay lần đầu */
-drawWheel();
-
+spinBtn.addEventListener("click", spin);
 </script>
 
 </body>

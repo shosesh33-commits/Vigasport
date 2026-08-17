@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>VigaSport - Vòng quay may mắn</title>
 
 <style>
@@ -12,6 +13,7 @@
 
 html,body{
   margin:0;
+  padding:0;
   min-height:100%;
 }
 
@@ -84,7 +86,7 @@ canvas{
 button{
   border:0;
   background:#ed3345;
-  color:white;
+  color:#fff;
   border-radius:15px;
   padding:15px 30px;
   font-size:20px;
@@ -100,21 +102,32 @@ button:disabled{
 
 #result{
   display:none;
+  width:100%;
   margin:18px auto 0;
   padding:15px;
-  width:100%;
   border-radius:14px;
   background:#fff4c7;
   color:#e52e42;
-  font-size:25px;
   text-align:center;
+}
+
+#result .congrats{
+  font-size:18px;
+  color:#333;
 }
 
 #result b{
   display:block;
+  margin-top:5px;
   color:#e52e42;
   font-size:25px;
-  margin-top:5px;
+}
+
+#result .hint{
+  display:block;
+  margin-top:8px;
+  font-size:14px;
+  color:#333;
 }
 
 .note{
@@ -125,6 +138,7 @@ button:disabled{
 }
 
 @media(max-width:500px){
+
   body{
     padding:0;
   }
@@ -158,11 +172,6 @@ button:disabled{
   #result{
     width:92vw;
     max-width:430px;
-    font-size:22px;
-  }
-
-  #result b{
-    font-size:25px;
   }
 }
 </style>
@@ -195,6 +204,10 @@ button:disabled{
 
 <script>
 
+/* =========================
+   PHẦN THƯỞNG
+========================= */
+
 const prizes = [
   "Vớ + băng quấn",
   "Túi chống nước",
@@ -202,8 +215,14 @@ const prizes = [
   "Giày shop chọn"
 ];
 
+
+/* =========================
+   THIẾT LẬP
+========================= */
+
 const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
+
 const btn = document.getElementById("spin");
 const result = document.getElementById("result");
 
@@ -230,21 +249,38 @@ function draw(){
 
     /* Vẽ ô */
     ctx.beginPath();
+
     ctx.moveTo(350,350);
-    ctx.arc(350,350,340,a,a+s);
+
+    ctx.arc(
+      350,
+      350,
+      340,
+      a,
+      a+s
+    );
+
     ctx.closePath();
 
-    ctx.fillStyle = `hsl(${i*360/n},78%,54%)`;
+    const colors = [
+      "#ed2f2f",
+      "#7ee52a",
+      "#2fd3d6",
+      "#8f3fe3"
+    ];
+
+    ctx.fillStyle = colors[i];
+
     ctx.fill();
 
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 5;
+
     ctx.stroke();
 
 
     /* =========================
-       CHỮ PHẦN THƯỞNG
-       ĐÃ SỬA KHÔNG BỊ NGƯỢC
+       VẼ CHỮ
     ========================= */
 
     ctx.save();
@@ -255,39 +291,108 @@ function draw(){
     ctx.rotate(mid);
 
     /*
-      Nếu chữ nằm ở nửa bên trái
-      thì xoay thêm 180 độ để chữ
-      luôn đọc được bình thường.
+      Đảo chữ ở phía bên trái
+      để luôn đọc được bình thường.
     */
+
     if(Math.cos(mid) < 0){
       ctx.rotate(Math.PI);
     }
 
     ctx.fillStyle = "#fff";
-    ctx.font = "bold 24px Arial";
+
+    ctx.font = "bold 22px Arial";
+
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    ctx.fillText(prizes[i],230,0);
+    /*
+      Chia chữ dài thành 2 dòng
+      để không bị dính nhau.
+    */
+
+    let lines = [];
+
+    if(prizes[i] === "Vớ + băng quấn"){
+      lines = ["Vớ +", "băng quấn"];
+    }
+    else if(prizes[i] === "Túi chống nước"){
+      lines = ["Túi chống", "nước"];
+    }
+    else if(prizes[i] === "Giày tự chọn"){
+      lines = ["Giày tự", "chọn"];
+    }
+    else if(prizes[i] === "Giày shop chọn"){
+      lines = ["Giày shop", "chọn"];
+    }
+    else{
+      lines = [prizes[i]];
+    }
+
+    /*
+      Vị trí chữ nằm giữa ô,
+      cách tâm vừa đủ.
+    */
+
+    if(lines.length === 1){
+
+      ctx.fillText(
+        lines[0],
+        215,
+        0
+      );
+
+    }else{
+
+      ctx.fillText(
+        lines[0],
+        215,
+        -14
+      );
+
+      ctx.fillText(
+        lines[1],
+        215,
+        14
+      );
+
+    }
 
     ctx.restore();
   }
 
 
   /* =========================
-     NÚT QUAY Ở GIỮA
+     VÒNG TRÒN Ở GIỮA
   ========================= */
 
   ctx.beginPath();
-  ctx.arc(350,350,55,0,Math.PI*2);
-  ctx.fillStyle="#ed3345";
+
+  ctx.arc(
+    350,
+    350,
+    55,
+    0,
+    Math.PI*2
+  );
+
+  ctx.fillStyle = "#ed3345";
+
   ctx.fill();
 
-  ctx.fillStyle="#fff";
-  ctx.font="bold 20px Arial";
-  ctx.textAlign="center";
-  ctx.textBaseline="middle";
-  ctx.fillText("QUAY",350,350);
+
+  ctx.fillStyle = "#fff";
+
+  ctx.font = "bold 20px Arial";
+
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  ctx.fillText(
+    "QUAY",
+    350,
+    350
+  );
 }
 
 
@@ -297,64 +402,94 @@ function draw(){
 
 function showPrize(prize){
 
-  result.style.display="block";
+  result.style.display = "block";
 
-  result.innerHTML =
-    "🎉 Chúc mừng!<br>" +
-    "<b>" + prize + "</b><br>" +
-    "<span style='font-size:14px;color:#333'>" +
-    "Hãy chụp màn hình kết quả để nhận quà." +
-    "</span>";
+  result.innerHTML = `
+    <span class="congrats">🎉 Chúc mừng!</span>
+    <b>${prize}</b>
+    <span class="hint">
+      Hãy chụp màn hình kết quả để nhận quà.
+    </span>
+  `;
 }
 
 
 /* =========================
-   QUAY
+   QUAY VÒNG QUAY
 ========================= */
 
 function spin(){
 
-  if(busy || localStorage.getItem(KEY)==="1"){
+  if(
+    busy ||
+    localStorage.getItem(KEY) === "1"
+  ){
     return;
   }
 
-  busy=true;
-  btn.disabled=true;
+  busy = true;
 
-  result.style.display="none";
+  btn.disabled = true;
 
-  const n=prizes.length;
-  const s=Math.PI*2/n;
+  result.style.display = "none";
 
-  const index=Math.floor(Math.random()*n);
+
+  const n = prizes.length;
+
+  const s = Math.PI*2/n;
+
 
   /*
-    Đưa phần thưởng được chọn
-    vào đúng vị trí mũi tên phía trên.
+    Chọn ngẫu nhiên phần thưởng.
   */
+
+  const index = Math.floor(
+    Math.random()*n
+  );
+
+
+  /*
+    Tính chính xác góc để phần thưởng
+    được chọn dừng ngay dưới mũi tên.
+  */
+
   const target =
     rotation +
-    Math.PI*2*7 +
-    (n-index-0.5)*s -
-    Math.PI/2;
+    Math.PI*2*7 -
+    index*s -
+    s/2;
 
-  const start=rotation;
-  const duration=4500;
-  const begin=performance.now();
+
+  const start = rotation;
+
+  const duration = 4500;
+
+  const begin = performance.now();
 
 
   function frame(now){
 
-    const t=Math.min(1,(now-begin)/duration);
+    const t = Math.min(
+      1,
+      (now-begin)/duration
+    );
+
 
     /*
-      Ease-out
+      Hiệu ứng giảm tốc.
     */
-    const ease=1-Math.pow(1-t,4);
 
-    rotation=start+(target-start)*ease;
+    const ease =
+      1-Math.pow(1-t,4);
+
+
+    rotation =
+      start +
+      (target-start)*ease;
+
 
     draw();
+
 
     if(t<1){
 
@@ -362,37 +497,58 @@ function spin(){
 
     }else{
 
-      busy=false;
-      localStorage.setItem(KEY,"1");
+      rotation = target;
 
-      btn.disabled=true;
-      btn.textContent="🔒 ĐÃ QUAY";
+      draw();
 
-      showPrize(prizes[index]);
+      busy = false;
+
+      /*
+        Lưu trạng thái đã quay.
+      */
+
+      localStorage.setItem(
+        KEY,
+        "1"
+      );
+
+      btn.disabled = true;
+
+      btn.textContent = "🔒 ĐÃ QUAY";
+
+      showPrize(
+        prizes[index]
+      );
     }
   }
+
 
   requestAnimationFrame(frame);
 }
 
 
 /* =========================
-   KIỂM TRA ĐÃ QUAY CHƯA
+   KIỂM TRA TRẠNG THÁI
 ========================= */
 
-if(localStorage.getItem(KEY)==="1"){
+if(
+  localStorage.getItem(KEY) === "1"
+){
 
-  btn.disabled=true;
-  btn.textContent="🔒 ĐÃ QUAY";
+  btn.disabled = true;
 
+  btn.textContent = "🔒 ĐÃ QUAY";
 }
 
 
 /* =========================
-   BẮT ĐẦU
+   KHỞI ĐỘNG
 ========================= */
 
-btn.addEventListener("click",spin);
+btn.addEventListener(
+  "click",
+  spin
+);
 
 draw();
 
